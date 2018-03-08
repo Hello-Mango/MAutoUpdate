@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ServerUpdate>
+  <item>
+    <ApplicationStart>demo.exe</ApplicationStart>
+    <AppName>Print</AppName>
+    <MinVersion>1.0.0.0</MinVersion>
+    <ReleaseDate>2017/9/28 9:25:24</ReleaseDate>
+    <ReleaseUrl>http://localhost/WebApp/update/1.1.0.0.zip</ReleaseUrl>
+    <ReleaseVersion>1.1.0.0</ReleaseVersion>
+    <VersionDesc>1、Increment$2、hello$3、123456</VersionDesc>
+    <UpdateMode>Increment</UpdateMode>
+  </item>
+</ServerUpdate>

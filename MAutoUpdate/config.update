@@ -1,0 +1,6 @@
+﻿[regedit_del] 
+SOFTWARE\\GoodMES\\Printer,name
+[regedit_add]
+SOFTWARE\\GoodMES\\Printer,name=John Doe 
+[file_del] 
+hello.dll
