@@ -363,51 +363,46 @@ namespace MAutoUpdate
         private UpdateWork ExecuteINI()
         {
             DirectoryInfo TheFolder = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
-            foreach (FileInfo NextFile in TheFolder.GetFiles())
+
+            if (File.Exists(Path.Combine(TheFolder.FullName, "config.update")))
             {
-                var fileName = System.IO.Path.GetExtension(NextFile.FullName);
-                // String aLastName = NextFile.FullName.Substring(NextFile.FullName.LastIndexOf(".") + 1, 6);
-                if (File.Exists(NextFile.FullName) && fileName.ToUpper() == ".UPDATE")
+                String[] ss = File.ReadAllLines(Path.Combine(TheFolder.FullName, "config.update"));
+                Int32 i = -1;//0[regedit_del] 表示注册表删除‘1[regedit_add]表示注册表新增 2[file_del] 表示删除文件
+                foreach (var s in ss)
                 {
-                    String[] ss = File.ReadAllLines(NextFile.FullName);
-                    Int32 i = -1;//0[regedit_del] 表示注册表删除‘1[regedit_add]表示注册表新增 2[file_del] 表示删除文件
-                    foreach (var s in ss)
+                    String s1 = s.Trim();
+                    if (s1 == "[regedit_del]")
                     {
-                        Thread.Sleep(500);
-                        String s1 = s.Trim();
-                        if (s1 == "[regedit_del]")
+                        i = 0;
+                    }
+                    else if (s1 == "[regedit_add]")
+                    {
+                        i = 1;
+                    }
+                    else if (s1 == "[file_del]")
+                    {
+                        i = 2;
+                    }
+                    else
+                    {
+                        if (i == 0)
                         {
-                            i = 0;
+                            String[] tempKeys = s1.Split(',');
+                            DelRegistryKey(tempKeys[0], tempKeys[1]);
                         }
-                        else if (s1 == "[regedit_add]")
+                        else if (i == 1)
                         {
-                            i = 1;
+                            String[] values = s1.Split('=');
+                            String[] tempKeys = values[0].Split(',');
+                            SetRegistryKey(tempKeys[0], tempKeys[1], values[1]);
                         }
-                        else if (s1 == "[file_del]")
+                        else if (i == 2)
                         {
-                            i = 2;
-                        }
-                        else
-                        {
-                            if (i == 0)
-                            {
-                                String[] tempKeys = s1.Split(',');
-                                DelRegistryKey(tempKeys[0], tempKeys[1]);
-                            }
-                            else if (i == 1)
-                            {
-                                String[] values = s1.Split('=');
-                                String[] tempKeys = values[0].Split(',');
-                                SetRegistryKey(tempKeys[0], tempKeys[1], values[1]);
-                            }
-                            else if (i == 2)
-                            {
-                                DelFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, s1));
-                            }
+                            DelFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, s1));
                         }
                     }
-                    DelFile(NextFile.FullName);
                 }
+                DelFile(Path.Combine(TheFolder.FullName, "config.update"));
             }
             return this;
         }
@@ -478,7 +473,12 @@ namespace MAutoUpdate
             reg = reglocal.OpenSubKey(subKey, true);
             if (reg != null)
             {
-                reg.DeleteValue(key);
+                var res = reg.GetValue(key);
+                if (res != null)
+                {
+                    reg.DeleteValue(key);
+
+                }
             }
             reg.Close();
         }
