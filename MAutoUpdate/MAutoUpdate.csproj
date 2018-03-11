@@ -61,9 +61,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNetZip">
-      <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -98,6 +95,51 @@
     <Compile Include="YButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Zip DLL\ComHelper.cs" />
+    <Compile Include="Zip DLL\CRC32.cs" />
+    <Compile Include="Zip DLL\Deflate.cs" />
+    <Compile Include="Zip DLL\DeflateStream.cs" />
+    <Compile Include="Zip DLL\EncryptionAlgorithm.cs" />
+    <Compile Include="Zip DLL\Events.cs" />
+    <Compile Include="Zip DLL\Exceptions.cs" />
+    <Compile Include="Zip DLL\ExtractExistingFileAction.cs" />
+    <Compile Include="Zip DLL\FileSelector.cs" />
+    <Compile Include="Zip DLL\GZipStream.cs" />
+    <Compile Include="Zip DLL\Inflate.cs" />
+    <Compile Include="Zip DLL\InfTree.cs" />
+    <Compile Include="Zip DLL\OffsetStream.cs" />
+    <Compile Include="Zip DLL\ParallelDeflateOutputStream.cs" />
+    <Compile Include="Zip DLL\Shared.cs" />
+    <Compile Include="Zip DLL\Tree.cs" />
+    <Compile Include="Zip DLL\WinZipAes.cs" />
+    <Compile Include="Zip DLL\ZipConstants.cs" />
+    <Compile Include="Zip DLL\ZipCrypto.cs" />
+    <Compile Include="Zip DLL\ZipDirEntry.cs" />
+    <Compile Include="Zip DLL\ZipEntry.cs" />
+    <Compile Include="Zip DLL\ZipEntry.Extract.cs" />
+    <Compile Include="Zip DLL\ZipEntry.Read.cs" />
+    <Compile Include="Zip DLL\ZipEntry.Write.cs" />
+    <Compile Include="Zip DLL\ZipEntrySource.cs" />
+    <Compile Include="Zip DLL\ZipErrorAction.cs" />
+    <Compile Include="Zip DLL\ZipFile.AddUpdate.cs" />
+    <Compile Include="Zip DLL\ZipFile.Check.cs" />
+    <Compile Include="Zip DLL\ZipFile.cs" />
+    <Compile Include="Zip DLL\ZipFile.Events.cs" />
+    <Compile Include="Zip DLL\ZipFile.Extract.cs" />
+    <Compile Include="Zip DLL\ZipFile.Read.cs" />
+    <Compile Include="Zip DLL\ZipFile.Save.cs" />
+    <Compile Include="Zip DLL\ZipFile.SaveSelfExtractor.cs" />
+    <Compile Include="Zip DLL\ZipFile.Selector.cs" />
+    <Compile Include="Zip DLL\ZipFile.Static.cs" />
+    <Compile Include="Zip DLL\ZipFile.x-IEnumerable.cs" />
+    <Compile Include="Zip DLL\ZipInputStream.cs" />
+    <Compile Include="Zip DLL\ZipOutputStream.cs" />
+    <Compile Include="Zip DLL\ZipSegmentedStream.cs" />
+    <Compile Include="Zip DLL\Zlib.cs" />
+    <Compile Include="Zip DLL\ZlibBaseStream.cs" />
+    <Compile Include="Zip DLL\ZlibCodec.cs" />
+    <Compile Include="Zip DLL\ZlibConstants.cs" />
+    <Compile Include="Zip DLL\ZlibStream.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -111,7 +153,6 @@
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -121,8 +162,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Zip DLL\Migrated rules for Zip DLL.ruleset" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Zip DLL\msbuild.flymake.xml" />
     <None Include="config.update" />
     <Content Include="Local.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -141,7 +184,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Zip DLL\BZip2\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

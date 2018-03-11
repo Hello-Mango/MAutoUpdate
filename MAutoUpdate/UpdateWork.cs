@@ -146,13 +146,7 @@ namespace MAutoUpdate
                 {
                     if (item.Name != mainName)//当前文件不需要备份
                     {
-                        if (item.Name == "DotNetZip.dll")
-                        {
-                        }
-                        else
-                        {
-                            File.Copy(item.FullName, bakPath + item.Name, true);
-                        }
+                        File.Copy(item.FullName, bakPath + item.Name, true);
                     }
                 }
                 //文件夹复制
@@ -303,7 +297,7 @@ namespace MAutoUpdate
             {
                 if (item.Name != mainName)
                 {
-                    if (item.Name == "DotNetZip.dll" || item.Name == "Local.xml")
+                    if (item.Name == "Local.xml")
                     {
                     }
                     else
