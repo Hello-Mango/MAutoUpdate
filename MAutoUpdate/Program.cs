@@ -58,7 +58,7 @@ namespace MAutoUpdate
                                 {
                                     Application.EnableVisualStyles();
                                     Application.SetCompatibleTextRenderingDefault(false);
-                                    Application.Run(new MainForm1(updateWork));
+                                    Application.Run(new MainForm(updateWork));
                                 }
                             }
                             else
@@ -89,7 +89,7 @@ namespace MAutoUpdate
                                     {
                                         Application.EnableVisualStyles();
                                         Application.SetCompatibleTextRenderingDefault(false);
-                                        Application.Run(new MainForm1(updateWork));
+                                        Application.Run(new MainForm(updateWork));
                                     }
                                 }
                             }
