@@ -15,10 +15,10 @@ namespace MAutoUpdate
         static Process pCurrent = Process.GetCurrentProcess();
         static Mutex m = new Mutex(true, pCurrent.MainModule.FileName.Replace(":", "").Replace(@"\", "") + "MAutoUpdate", out f);//互斥，
 
-       /// <summary>
-       /// 程序主入口
-       /// </summary>
-       /// <param name="args">[0]程序名称，[1]静默更新 0：否 1：是</param>
+        /// <summary>
+        /// 程序主入口
+        /// </summary>
+        /// <param name="args">[0]程序名称，[1]静默更新 0：否 1：是 [3] 0：程序启动检测 1：手动点击检查更新按钮（在于忽略更新的情况下，手动检测时候还是要弹出来的） </param>
         [STAThread]
         static void Main(string[] args)
         {
@@ -26,9 +26,17 @@ namespace MAutoUpdate
             {
                 try
                 {
-                    if (String.IsNullOrEmpty(args[0]) == false)
+                    string programName = args[0];
+                    string silentUpdate = args[1];
+                    string isClickUpdate = "0";
+                    string localAddress = AppDomain.CurrentDomain.BaseDirectory;
+                    if (args.Length == 3)
                     {
-                        UpdateWork updateWork = new UpdateWork(args[0]);
+                        isClickUpdate = args[2];
+                    }
+                    if (string.IsNullOrEmpty(programName) == false)
+                    {
+                        UpdateWork updateWork = new UpdateWork(programName, localAddress, isClickUpdate);
                         if (updateWork.UpdateVerList.Count > 0)
                         {
                             /* 当前用户是管理员的时候，直接启动应用程序 
@@ -42,7 +50,7 @@ namespace MAutoUpdate
                             //判断当前登录用户是否为管理员 
                             if (principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator))
                             {
-                                if (args[1] == "1")
+                                if (silentUpdate == "1")
                                 {
                                     updateWork.Do();
                                 }
@@ -50,12 +58,12 @@ namespace MAutoUpdate
                                 {
                                     Application.EnableVisualStyles();
                                     Application.SetCompatibleTextRenderingDefault(false);
-                                    Application.Run(new MainForm(updateWork));
+                                    Application.Run(new MainForm1(updateWork));
                                 }
                             }
                             else
                             {
-                                String result = Environment.GetEnvironmentVariable("systemdrive");
+                                string result = Environment.GetEnvironmentVariable("systemdrive");
                                 if (AppDomain.CurrentDomain.BaseDirectory.Contains(result))
                                 {
                                     //创建启动对象 
@@ -66,14 +74,14 @@ namespace MAutoUpdate
                                         //设置启动动作,确保以管理员身份运行 
                                         Verb = "runas",
 
-                                        Arguments = " " + args[0] + " " + args[1]
+                                        Arguments = " " + programName + " " + silentUpdate
                                     };
                                     //如果不是管理员，则启动UAC 
                                     System.Diagnostics.Process.Start(startInfo);
                                 }
                                 else
                                 {
-                                    if (args[1] == "1")
+                                    if (silentUpdate == "1")
                                     {
                                         updateWork.Do();
                                     }
@@ -81,7 +89,7 @@ namespace MAutoUpdate
                                     {
                                         Application.EnableVisualStyles();
                                         Application.SetCompatibleTextRenderingDefault(false);
-                                        Application.Run(new MainForm(updateWork));
+                                        Application.Run(new MainForm1(updateWork));
                                     }
                                 }
                             }

@@ -1,5 +1,6 @@
 ﻿<LocalUpdate>
   <LocalVersion>1.0.0.0</LocalVersion>
+  <LocalIgnoreVersion>1.1.0.0</LocalIgnoreVersion>
   <LastUdpate>2016/9/28 9:25:24</LastUdpate>
-  <ServerUpdateUrl>http://localhost/TestWeb/Server.xml</ServerUpdateUrl>
+  <ServerUpdateUrl>http://localhost/huidu/server.xml</ServerUpdateUrl>
 </LocalUpdate>

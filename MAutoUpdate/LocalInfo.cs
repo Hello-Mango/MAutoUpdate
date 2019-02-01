@@ -9,13 +9,20 @@ namespace MAutoUpdate
 {
     public class LocalInfo
     {
-        public String LocalVersion { get; set; }
-        public String LastUdpate { get; set; }
-        public String ServerUpdateUrl { get; set; }
+        public string LocalVersion { get; set; }
+        public string LastUdpate { get; set; }
+        public string ServerUpdateUrl { get; set; }
+        public string LocalIgnoreVersion { get; set; }
 
-        private String url = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Local.xml");
+        private string url = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Local.xml");
 
-        public void SaveReg(String subKey)
+
+        public LocalInfo(string localAddress)
+        {
+            url = Path.Combine(localAddress, "Local.xml");
+        }
+
+        public void SaveReg(string subKey)
         {
             RegistryKey Key;
             Key = Registry.CurrentUser;
@@ -27,7 +34,7 @@ namespace MAutoUpdate
                 Key.SetValue(item.Name.ToString(), this.GetType().GetProperty(item.Name.ToString()).GetValue(this, null).ToString());
             }
         }
-        public void LoadReg(String subKey)
+        public void LoadReg(string subKey)
         {
             //获取本地配置文件
             RegistryKey Key;
@@ -51,7 +58,7 @@ namespace MAutoUpdate
                 RemoteInfo remote = new RemoteInfo();
                 foreach (XmlNode pItem in item.ChildNodes)
                 {
-                    this.GetType().GetProperty(pItem.Name).SetValue(this, pItem.InnerText, null);
+                    GetType().GetProperty(pItem.Name).SetValue(this, pItem.InnerText, null);
                 }
             }
         }

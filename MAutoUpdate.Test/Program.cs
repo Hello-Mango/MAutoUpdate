@@ -14,7 +14,7 @@ namespace MAutoUpdate.Test
         [STAThread]
         static void Main()
         {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "MAutoUpdate.exe";
+            string path = AppDomain.CurrentDomain.BaseDirectory + "MAutoUpdate.exe";
             //同时启动自动更新程序
             if (File.Exists(path))
             {

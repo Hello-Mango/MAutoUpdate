@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using System.Xml;
 using Ionic.Zip;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace MAutoUpdate
 {
@@ -19,21 +21,21 @@ namespace MAutoUpdate
         public UpdateProgess OnUpdateProgess;
         string mainName;
         //临时目录（WIN7以及以上在C盘只有对于temp目录有操作权限）
-        String tempPath = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), @"MAutoUpdate\temp\");
-        String bakPath = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), @"MAutoUpdate\bak\");
+        string tempPath = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), @"MAutoUpdate\temp\");
+        string bakPath = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), @"MAutoUpdate\bak\");
 
-        LocalInfo localInfo = new LocalInfo();
+        LocalInfo localInfo;
         public List<RemoteInfo> UpdateVerList { get; set; }
-        public String programName { get; set; }
-        public String subKey { get; set; }
+        public string programName { get; set; }
+        public string subKey { get; set; }
         /// <summary>
         /// 初始化配置目录信息
         /// </summary>
-        public UpdateWork(String _programName)
+        public UpdateWork(string _programName, string localAddress, string isClickUpdate)
         {
+            localInfo = new LocalInfo(localAddress);
             Process cur = Process.GetCurrentProcess();
             mainName = Path.GetFileName(cur.MainModule.FileName);
-            //subKey = _subKey;
             programName = _programName;
             //创建备份目录信息
             DirectoryInfo bakinfo = new DirectoryInfo(bakPath);
@@ -48,29 +50,33 @@ namespace MAutoUpdate
                 tempinfo.Create();
             }
             localInfo.LoadXml();
-            UpdateVerList = GetServer("http://localhost/TestWeb/Server.xml");
-            CheckVer(localInfo.LocalVersion);
+            UpdateVerList = GetServer(localInfo.ServerUpdateUrl);
+            CheckVer(localInfo.LocalVersion, localInfo.LocalIgnoreVersion, isClickUpdate);
         }
 
-        public Boolean Do()
+        public bool Do()
         {
             KillProcessExist();
+            Thread.Sleep(400);
             //更新之前先备份
             Bak();
+            Thread.Sleep(400);
             //备份结束开始下载东西
             DownLoad();//下载更新包文件信息
+            Thread.Sleep(400);
             //3、开始更新
             Update();
+            Thread.Sleep(400);
 
             Start();
+            Thread.Sleep(400);
             return true;
         }
 
         public void IgnoreThisVersion()
         {
             var item = UpdateVerList[UpdateVerList.Count - 1];
-            localInfo.LastUdpate = item.ReleaseDate;
-            localInfo.LocalVersion = item.ReleaseVersion;
+            localInfo.LocalIgnoreVersion = item.ReleaseVersion;
             localInfo.SaveXml();
         }
 
@@ -79,8 +85,9 @@ namespace MAutoUpdate
         /// </summary>
         /// <param name="url">自动更新的URL信息</param>
         /// <returns></returns>
-        private static List<RemoteInfo> GetServer(String url)
+        private static List<RemoteInfo> GetServer(string url)
         {
+            ServicePointManager.ServerCertificateValidationCallback += RemoteCertificateValidate;
             List<RemoteInfo> list = new List<RemoteInfo>();
             XmlReader xml = XmlReader.Create(url);
             XmlDocument xdoc = new XmlDocument();
@@ -98,6 +105,13 @@ namespace MAutoUpdate
             }
             return list;
         }
+        private static bool RemoteCertificateValidate(
+              object sender, X509Certificate cert,
+               X509Chain chain, SslPolicyErrors error)
+        {
+            System.Console.WriteLine("Warning, trust any certificate");
+            return true;
+        }
 
         /// <summary>
         /// 下载方法
@@ -107,7 +121,6 @@ namespace MAutoUpdate
             //比如uri=http://localhost/Rabom/1.rar;iis就需要自己配置了。
             //截取文件名
             //构造文件完全限定名,准备将网络流下载为本地文件
-
             using (WebClient web = new WebClient())
             {
                 foreach (var item in UpdateVerList)
@@ -319,23 +332,24 @@ namespace MAutoUpdate
         /// 校验程序版本号
         /// </summary>
         /// <param name="LocalVer">当前本地版本信息</param>
-        /// <param name="RemoteVer">服务器端版本信息</param>
         /// <returns></returns>
-        private UpdateWork CheckVer(String LocalVer)
+        private UpdateWork CheckVer(string LocalVer, string localIgnoreVer, string isClickUpdate)
         {
-            String[] Local = LocalVer.Split('.');
+            string[] Local = LocalVer.Split('.');
+            string[] LocalIgnore = localIgnoreVer.Split('.');
             List<RemoteInfo> list = new List<RemoteInfo>();
+            List<RemoteInfo> listReal = new List<RemoteInfo>();
             foreach (var item in UpdateVerList)
             {
-                String[] Remote = item.ReleaseVersion.Split('.');
+                string[] Remote = item.ReleaseVersion.Split('.');
                 for (int i = 0; i < Local.Length; i++)
                 {
-                    if (Int32.Parse(Local[i]) < Int32.Parse(Remote[i]))
+                    if (int.Parse(Local[i]) < int.Parse(Remote[i]))
                     {
                         list.Add(item);
                         break;
                     }
-                    else if (Int32.Parse(Local[i]) == Int32.Parse(Remote[i]))
+                    else if (int.Parse(Local[i]) == int.Parse(Remote[i]))
                     {
                         continue;
                     }
@@ -345,7 +359,34 @@ namespace MAutoUpdate
                     }
                 }
             }
-            UpdateVerList = list;
+            if (isClickUpdate == "0")
+            {
+                foreach (var item in list)
+                {
+                    string[] Remote = item.ReleaseVersion.Split('.');
+                    for (int i = 0; i < LocalIgnore.Length; i++)
+                    {
+                        if (int.Parse(LocalIgnore[i]) < int.Parse(Remote[i]))
+                        {
+                            listReal.Add(item);
+                            break;
+                        }
+                        else if (int.Parse(LocalIgnore[i]) == int.Parse(Remote[i]))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                listReal = list;
+            }
+            UpdateVerList = listReal;
             return this;
         }
 
@@ -360,7 +401,7 @@ namespace MAutoUpdate
 
             if (File.Exists(Path.Combine(TheFolder.FullName, "config.update")))
             {
-                String[] ss = File.ReadAllLines(Path.Combine(TheFolder.FullName, "config.update"));
+                string[] ss = File.ReadAllLines(Path.Combine(TheFolder.FullName, "config.update"));
                 Int32 i = -1;//0[regedit_del] 表示注册表删除‘1[regedit_add]表示注册表新增 2[file_del] 表示删除文件
                 foreach (var s in ss)
                 {
@@ -381,13 +422,13 @@ namespace MAutoUpdate
                     {
                         if (i == 0)
                         {
-                            String[] tempKeys = s1.Split(',');
+                            string[] tempKeys = s1.Split(',');
                             DelRegistryKey(tempKeys[0], tempKeys[1]);
                         }
                         else if (i == 1)
                         {
-                            String[] values = s1.Split('=');
-                            String[] tempKeys = values[0].Split(',');
+                            string[] values = s1.Split('=');
+                            string[] tempKeys = values[0].Split(',');
                             SetRegistryKey(tempKeys[0], tempKeys[1], values[1]);
                         }
                         else if (i == 2)
@@ -404,7 +445,7 @@ namespace MAutoUpdate
         /// <summary>
         /// 删除文件
         /// </summary>
-        private UpdateWork DelFile(String name)
+        private UpdateWork DelFile(string name)
         {
             if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name)))
             {
@@ -419,7 +460,7 @@ namespace MAutoUpdate
         /// </summary>
         /// <param name="programName"></param>
         /// <returns></returns>
-        public Boolean CheckProcessExist()
+        public bool CheckProcessExist()
         {
             return Process.GetProcessesByName(programName).Length > 0 ? true : false;
         }

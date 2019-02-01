@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -22,10 +23,19 @@ namespace MAutoUpdate
         {
             InitializeComponent();
             updateWork = _updateWork;
-            foreach (var item in _updateWork.UpdateVerList[_updateWork.UpdateVerList.Count - 1].VersionDesc.Split('$'))
+            var res = _updateWork.UpdateVerList[_updateWork.UpdateVerList.Count - 1].VersionDesc;
+
+            var temp = WebRequest.Create(res);
+            var stream = temp.GetResponse().GetResponseStream();
+            using (StreamReader reader = new StreamReader(stream, System.Text.Encoding.Default))
             {
-                this.lblContent.Text = this.lblContent.Text + item + Environment.NewLine;
+                string text = reader.ReadToEnd();
+                this.lblContent.Text = text;
             }
+            //foreach (var item in _updateWork.UpdateVerList[_updateWork.UpdateVerList.Count - 1].VersionDesc.Split('$'))
+            //{
+            //    this.lblContent.Text = this.lblContent.Text + item + Environment.NewLine;
+            //}
         }
         #region 让窗体变成可移动
         [DllImport("user32.dll")]
@@ -85,7 +95,6 @@ namespace MAutoUpdate
         {
             updateWork.IgnoreThisVersion();
             Application.Exit();
-
         }
     }
 }
