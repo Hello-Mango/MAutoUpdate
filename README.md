@@ -13,7 +13,7 @@ Server.xml
     <ReleaseDate>2017/9/28 9:25:24</ReleaseDate>//发布时间
     <ReleaseUrl>http://localhost/WebApp/update/1.1.0.0.zip</ReleaseUrl>//下载地址
     <ReleaseVersion>1.1.0.0</ReleaseVersion>//发布版本号
-    <VersionDesc>1、Increment$2、hello$3、123456</VersionDesc>//更新界面提示信息（$会替换成换行符）
+    <VersionDesc>更新说明文件的链接地址信息，rtf的格式</VersionDesc>//更新界面提示信息
     <UpdateMode>Increment</UpdateMode>//Cover表示覆盖更新，Increment表示增量更新
   </item>
 </ServerUpdate>
