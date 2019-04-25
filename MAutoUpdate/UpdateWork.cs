@@ -323,7 +323,7 @@ namespace MAutoUpdate
             {
                 if (item.Name != "bak" && item.Name != "temp")
                 {
-                    item.Delete();
+                    item.Delete(true);
                 }
             }
             return this;
