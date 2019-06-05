@@ -1,6 +1,6 @@
 ﻿[regedit_del] 
-SOFTWARE\\GoodMES\\Printer,name
+SOFTWARE\\Hello\\Printer,name
 [regedit_add]
-SOFTWARE\\GoodMES\\Printer,name=John Doe 
+SOFTWARE\\Hello\\Printer,name=John Doe 
 [file_del] 
 hello.dll
