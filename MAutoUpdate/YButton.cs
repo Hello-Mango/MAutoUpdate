@@ -6,7 +6,7 @@ using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Yizit.PrintHost.Control
+namespace MAutoUpdate.Control
 {
     public partial class YButton : Label
     {

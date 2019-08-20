@@ -69,18 +69,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainForm1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm1.Designer.cs">
-      <DependentUpon>MainForm1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MRichTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="MRichTextBox.Designer.cs">
-      <DependentUpon>MRichTextBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="UpdateWork.cs" />
     <Compile Include="LocalInfo.cs" />
     <Compile Include="LogTool.cs" />
@@ -152,9 +140,6 @@
     <Compile Include="Zip DLL\ZlibCodec.cs" />
     <Compile Include="Zip DLL\ZlibConstants.cs" />
     <Compile Include="Zip DLL\ZlibStream.cs" />
-    <EmbeddedResource Include="MainForm1.resx">
-      <DependentUpon>MainForm1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

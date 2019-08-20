@@ -1,4 +1,6 @@
-﻿namespace MAutoUpdate
+﻿using MAutoUpdate.Control;
+
+namespace MAutoUpdate
 {
     partial class MainForm
     {
@@ -31,9 +33,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.LBTitle = new System.Windows.Forms.Label();
             this.lblContent = new System.Windows.Forms.Label();
-            this.btnUpdateNow = new Yizit.PrintHost.Control.YButton();
-            this.btnUpdateLater = new Yizit.PrintHost.Control.YButton();
-            this.btnIgnore = new Yizit.PrintHost.Control.YButton();
+            this.btnUpdateNow = new YButton();
+            this.btnUpdateLater = new YButton();
+            this.btnIgnore = new YButton();
             this.SuspendLayout();
             // 
             // LBTitle
@@ -145,8 +147,8 @@
         #endregion
         private System.Windows.Forms.Label LBTitle;
         private System.Windows.Forms.Label lblContent;
-        private Yizit.PrintHost.Control.YButton btnIgnore;
-        private Yizit.PrintHost.Control.YButton btnUpdateLater;
-        private Yizit.PrintHost.Control.YButton btnUpdateNow;
+        private YButton btnIgnore;
+        private YButton btnUpdateLater;
+        private YButton btnUpdateNow;
     }
 }
